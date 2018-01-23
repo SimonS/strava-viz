@@ -3,7 +3,8 @@
             [clojure.core.async :refer [<!!]]
             [environ.core :refer [env]]
             [clj-time.core :as t]
-            [clj-time.coerce :as tc]))
+            [clj-time.coerce :as tc]
+            [ring.adapter.jetty :as jetty]))
 
 (def tkn (strava/access-token (env :code)))
 
@@ -21,7 +22,14 @@
 
 (t/date-time 2018 01 17)
 
-(let [[monday next-monday] (get-epochs-for-this-week )]
-  (<!! (strava/activities tkn {"before" next-monday "after" monday})))
+(def runs (let [[monday next-monday] (get-epochs-for-this-week )]
+  (<!! (strava/activities tkn {"before" next-monday "after" monday}))))
 
-
+(defn -main
+  "A very simple web server using Ring & Jetty"
+  [port-number]
+  (jetty/run-jetty
+     (fn [request] {:status 200
+                   :body "<h1>Integrated Ring</h1>"
+                   :headers {}})
+     {:port (Integer. port-number)}))
