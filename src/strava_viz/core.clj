@@ -4,7 +4,8 @@
             [environ.core :refer [env]]
             [clj-time.core :as t]
             [clj-time.coerce :as tc]
-            [ring.adapter.jetty :as jetty]))
+            [ring.adapter.jetty :as jetty]
+            [ring.middleware.reload :refer [wrap-reload]]))
 
 (def tkn (strava/access-token (env :code)))
 
@@ -25,11 +26,21 @@
     (comp #{true} :commute)
     (<!! (strava/activities tkn {"before" next-monday "after" monday})))))
 
-(defn -main
-  "A very simple web server using Ring & Jetty"
+(defn handler [request]
+  {:status 200
+   :body (str (count runs) " runs this week!")
+   :headers {}})
+
+
+(defn -dev-main
+  "auto reloads in dev"
   [port-number]
   (jetty/run-jetty
-     (fn [request] {:status 200
-                   :body (str (count runs) " runs this week")
-                   :headers {}})
+     (wrap-reload #'handler)
+     {:port (Integer. port-number)}))
+
+(defn -main
+  [port-number]
+  (jetty/run-jetty
+     handler
      {:port (Integer. port-number)}))
