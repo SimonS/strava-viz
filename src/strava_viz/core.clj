@@ -20,16 +20,16 @@
        (tc/to-epoch next-monday-date)])))
 
 
-(t/date-time 2018 01 17)
-
 (def runs (let [[monday next-monday] (get-epochs-for-this-week )]
-  (<!! (strava/activities tkn {"before" next-monday "after" monday}))))
+  (filter
+    (comp #{true} :commute)
+    (<!! (strava/activities tkn {"before" next-monday "after" monday})))))
 
 (defn -main
   "A very simple web server using Ring & Jetty"
   [port-number]
   (jetty/run-jetty
      (fn [request] {:status 200
-                   :body "<h1>Integrated Ring</h1>"
+                   :body (str (count runs) " runs this week")
                    :headers {}})
      {:port (Integer. port-number)}))
