@@ -7,7 +7,7 @@
             [ring.adapter.jetty :as jetty]
             [ring.middleware.reload :refer [wrap-reload]]))
 
-(def tkn (strava/access-token (env :code)))
+(def tkn (env :strava-access-token))
 
 (defn get-epochs-for-this-week
   ([] (get-epochs-for-this-week (t/now)))
@@ -20,8 +20,7 @@
       [(tc/to-epoch monday-date)
        (tc/to-epoch next-monday-date)])))
 
-
-(def runs (let [[monday next-monday] (get-epochs-for-this-week )]
+(def runs (let [[monday next-monday] (get-epochs-for-this-week (t/date-time 2018 01 23))]
   (filter
     (comp #{true} :commute)
     (<!! (strava/activities tkn {"before" next-monday "after" monday})))))
@@ -30,7 +29,6 @@
   {:status 200
    :body (str (count runs) " runs this week!")
    :headers {}})
-
 
 (defn -dev-main
   "auto reloads in dev"
