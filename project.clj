@@ -7,7 +7,8 @@
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [ekimber/clj-strava "0.1.1"]
                  [clj-time "0.14.2"]
-                 [ring "1.6.3"]]
+                 [ring "1.6.3"]
+                 [enlive "1.1.6"]]
   :min-lein-version "2.0.0"
   :uberjar-name "strava-viz.jar"
   :main strava-viz.core
