@@ -27,7 +27,7 @@
 
 (defn handler [request]
   {:status 200
-   :body (str (count runs) " runs this week!")
+   :body (str (count runs) " runs this week.")
    :headers {}})
 
 (defn -dev-main
