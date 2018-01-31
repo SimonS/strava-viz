@@ -19,6 +19,6 @@
        (tc/to-epoch next-monday-date)])))
 
 (def runs (let [[monday next-monday] (get-epochs-for-this-week (t/date-time 2018 01 23))]
-  (filter
+  (sort-by :start_date_local (filter
     (comp #{true} :commute)
-    (<!! (strava/activities tkn {"before" next-monday "after" monday})))))
+    (<!! (strava/activities tkn {"before" next-monday "after" monday}))))))
