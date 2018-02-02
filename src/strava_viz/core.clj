@@ -3,7 +3,7 @@
             [ring.adapter.jetty :as jetty]
             [ring.middleware.reload :refer [wrap-reload]]
             [net.cgrand.enlive-html :as html]
-            [compojure.core :refer [defroutes]]))
+            [compojure.core :refer [defroutes GET]]))
 
 (html/deftemplate strava-week "week.html" [runs]
   [:tbody :tr] (html/clone-for [run runs]
