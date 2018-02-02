@@ -18,12 +18,18 @@
       [(tc/to-epoch monday-date)
        (tc/to-epoch next-monday-date)])))
 
-(def runs (let [[monday next-monday] (get-epochs-for-this-week (t/date-time 2018 01 23))]
-  (sort-by :start_date_local (filter
-    (comp #{true} :commute)
-    (<!! (strava/activities tkn {"before" next-monday "after" monday}))))))
+(defn get-runs [monday next-monday]
+  (<!! (strava/activities tkn {"before" next-monday "after" monday})))
 
-(def formatted-runs
+(defn format-runs [runs]
   (map #(assoc % :end_date_local (tc/to-string (t/plus-
                                    (tc/from-string (:start_date_local %))
                                    (t/seconds (Integer. (:elapsed_time %)))))) runs))
+
+(defn get-and-format-runs
+  ([] (get-and-format-runs (t/now)))
+  ([y m d] (get-and-format-runs (t/date-time y m d)))
+  ([given-day] (let [[monday next-monday] (get-epochs-for-this-week given-day)]
+    (format-runs
+      (sort-by :start_date_local
+               (filter (comp #{true} :commute) (get-runs monday next-monday)))))))

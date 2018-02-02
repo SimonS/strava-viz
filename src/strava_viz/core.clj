@@ -1,5 +1,5 @@
 (ns strava-viz.core
-  (:require [strava-viz.fetch :refer [formatted-runs]]
+  (:require [strava-viz.fetch :refer [get-and-format-runs]]
             [ring.adapter.jetty :as jetty]
             [ring.middleware.reload :refer [wrap-reload]]
             [net.cgrand.enlive-html :as html]))
@@ -14,7 +14,7 @@
 
 (defn handler [request]
   {:status 200
-   :body (apply str (strava-week formatted-runs))
+   :body (apply str (strava-week (get-and-format-runs)))
    :headers {}})
 
 (defn -dev-main
