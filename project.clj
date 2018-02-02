@@ -8,7 +8,8 @@
                  [ekimber/clj-strava "0.1.1"]
                  [clj-time "0.14.2"]
                  [ring "1.6.3"]
-                 [enlive "1.1.6"]]
+                 [enlive "1.1.6"]
+                 [compojure "1.6.0"]]
   :min-lein-version "2.0.0"
   :uberjar-name "strava-viz.jar"
   :main strava-viz.core

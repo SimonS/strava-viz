@@ -2,7 +2,8 @@
   (:require [strava-viz.fetch :refer [get-and-format-runs]]
             [ring.adapter.jetty :as jetty]
             [ring.middleware.reload :refer [wrap-reload]]
-            [net.cgrand.enlive-html :as html]))
+            [net.cgrand.enlive-html :as html]
+            [compojure.core :refer [defroutes]]))
 
 (html/deftemplate strava-week "week.html" [runs]
   [:tbody :tr] (html/clone-for [run runs]
@@ -12,10 +13,20 @@
                                [:tr :td :a] (html/content (str (:id run)))
                                [:tr :td :a] (html/set-attr :href (str "https://www.strava.com/activities/" (:id run)))))
 
-(defn handler [request]
-  {:status 200
-   :body (apply str (strava-week (get-and-format-runs)))
-   :headers {}})
+(defn render-strava [runs]
+  (->> runs
+       strava-week
+       (apply str)))
+
+(defn coerce-route [d m y]
+  (let [day (Integer. d)
+        month (Integer. m)
+        year (Integer. y)]
+    (render-strava (get-and-format-runs year month day))))
+
+(defroutes handler
+  (GET "/" [] (render-strava (get-and-format-runs)))
+  (GET "/:d{\\d+}-:m{\\d+}-:y{\\d+}" [d m y] (coerce-route d m y)))
 
 (defn -dev-main
   "auto reloads in dev"
