@@ -22,3 +22,8 @@
   (sort-by :start_date_local (filter
     (comp #{true} :commute)
     (<!! (strava/activities tkn {"before" next-monday "after" monday}))))))
+
+(def formatted-runs
+  (map #(assoc % :end_date_local (tc/to-string (t/plus-
+                                   (tc/from-string (:start_date_local %))
+                                   (t/seconds (Integer. (:elapsed_time %)))))) runs))
