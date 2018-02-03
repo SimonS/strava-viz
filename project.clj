@@ -1,8 +1,7 @@
 (defproject strava-viz "0.1.0-SNAPSHOT"
   :description "Small webapp to display Strava commutes as timesheet. Mostly intended as play with Clojure and d3."
   :url "https://github.com/simons/strava-viz"
-  :jvm-opts ^:replace ["--add-modules" "java.xml.bind"]
-;; :jvm-opts ^:replace []
+  :jvm-opts ^:replace []
   :license {:name "MIT License"
             :url "https://opensource.org/licenses/MIT"}
   :dependencies [[org.clojure/clojure "1.8.0"]
