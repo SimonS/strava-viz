@@ -3,7 +3,8 @@
             [strava-viz.templating :refer [render-strava]]
             [ring.adapter.jetty :as jetty]
             [ring.middleware.reload :refer [wrap-reload]]
-            [compojure.core :refer [defroutes GET]]))
+            [compojure.core :refer [defroutes GET]]
+            [compojure.route :as route]))
 
 (defn coerce-route [d m y]
   (let [day (Integer. d)
@@ -13,7 +14,9 @@
 
 (defroutes handler
   (GET "/" [] (render-strava (get-and-format-runs)))
-  (GET "/:d{\\d+}-:m{\\d+}-:y{\\d+}" [d m y] (coerce-route d m y)))
+  (GET "/:d{\\d+}-:m{\\d+}-:y{\\d+}" [d m y] (coerce-route d m y))
+  (route/resources "/")
+  (route/not-found "Not Found"))
 
 (defn -dev-main
   "auto reloads in dev"
